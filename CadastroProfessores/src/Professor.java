@@ -63,6 +63,42 @@ public class Professor {
         this.telefone = telefone;
     }
     
+    public boolean editar(int Id, String nome, String disciplina, String email, String telefone) {
+        String sql = """
+                     UPDATE professores
+                     SET nome = ?, disciplina = ?, email = ?, telefone = ?
+                     WHERE id = ?
+                     """;
+        
+        try {
+            
+            Connection conexao = Conexao.conectar();
+            
+            if (conexao == null){
+                System.out.println("Não foi possível conectar");
+                return false;
+            }
+            
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(5, Id);
+            stmt.setString(1, nome);
+            stmt.setString(2, disciplina);
+            stmt.setString(3, email);
+            stmt.setString(4, telefone);
+            
+            int linhas = stmt.executeUpdate();
+            
+            stmt.close();
+            conexao.close();
+            return linhas > 0;            
+            
+        } catch (SQLException erro) {
+            System.out.println("Ocorreu um erro na hora de editar");
+            System.out.println(erro.getMessage());
+            return false;
+        }
+    }
+    
     public boolean excluir(int Id) {
         String sql = "DELETE FROM professores WHERE id = ?";
         

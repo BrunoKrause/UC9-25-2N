@@ -9,6 +9,26 @@ import javax.swing.JOptionPane;
 
 public class ConsultaProfessores extends javax.swing.JFrame {
 
+    private void desativarCampos() {
+        campoNome.setEnabled(false);
+        campoDisciplina.setEnabled(false);
+        campoEmail.setEnabled(false);
+        campoTelefone.setEnabled(false);
+        
+        btnEditar.setEnabled(false);
+        btnExcluir.setEnabled(false);
+    }
+    
+    private void ativarCampos() {
+        campoNome.setEnabled(true);
+        campoDisciplina.setEnabled(true);
+        campoEmail.setEnabled(true);
+        campoTelefone.setEnabled(true);
+        
+        btnEditar.setEnabled(true);
+        btnExcluir.setEnabled(true);
+    }
+    
     public void localizarProfessor() {
         String sql = "SELECT * from professores WHERE id = ?";
         
@@ -55,6 +75,7 @@ public class ConsultaProfessores extends javax.swing.JFrame {
             }
             
             tabelaProfessores.setModel(modelo);
+            ativarCampos();
             
             stmt.close();
             conexao.close();
@@ -100,6 +121,8 @@ public class ConsultaProfessores extends javax.swing.JFrame {
         campoTelefone.setText("");
         
         campoId.requestFocus();
+        
+        desativarCampos();
     }
     
     public ConsultaProfessores() {
@@ -108,6 +131,7 @@ public class ConsultaProfessores extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setTitle("Consulta de Professores");
+        desativarCampos();
     }
 
     /**
@@ -147,6 +171,11 @@ public class ConsultaProfessores extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabelaProfessores.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaProfessoresMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tabelaProfessores);
 
         jPanel1.setBackground(new java.awt.Color(204, 204, 255));
@@ -176,6 +205,11 @@ public class ConsultaProfessores extends javax.swing.JFrame {
 
         btnEditar.setBackground(new java.awt.Color(153, 153, 153));
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setBackground(new java.awt.Color(153, 153, 153));
         btnExcluir.setText("Excluir");
@@ -314,15 +348,61 @@ public class ConsultaProfessores extends javax.swing.JFrame {
                 
                 if(excluido) {
                     JOptionPane.showMessageDialog(this, "Professor Excluído com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
+                    carregarTabela();
+                    limpar();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Não foi possível cadastrar o professor.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Não foi possível excluir o professor.", "Erro", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
         
-        carregarTabela();
-        limpar();   
+           
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void tabelaProfessoresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaProfessoresMouseClicked
+        int linha = tabelaProfessores.getSelectedRow();
+        
+        if (linha >= 0) {
+            campoId.setText(tabelaProfessores.getValueAt(linha,0).toString());
+            campoNome.setText(tabelaProfessores.getValueAt(linha, 1).toString());
+            campoDisciplina.setText(tabelaProfessores.getValueAt(linha, 2).toString());
+            campoEmail.setText(tabelaProfessores.getValueAt(linha,3).toString());
+            campoTelefone.setText(tabelaProfessores.getValueAt(linha, 4).toString());
+            
+            ativarCampos();
+        }
+    }//GEN-LAST:event_tabelaProfessoresMouseClicked
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        
+        if (campoId.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Preencha o campo do ID");
+            
+        } else {
+            int resposta = JOptionPane.showConfirmDialog(this, "Você realmente deseja editar este(a) professor(a)?", "Confirmação de Edição", JOptionPane.YES_NO_OPTION);
+            
+            if (resposta == JOptionPane.YES_OPTION) {
+                Professor professor = new Professor();
+                
+                int id = Integer.parseInt(campoId.getText().trim());
+                String nome = campoNome.getText().trim();
+                String disciplina = campoDisciplina.getText().trim();
+                String email = campoEmail.getText().trim();
+                String telefone = campoTelefone.getText().trim();
+                
+                boolean editado = professor.editar(id,nome, disciplina, email, telefone);
+                
+                if(editado) {
+                    JOptionPane.showMessageDialog(this, "Professor Editado com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
+                    carregarTabela();
+                    limpar();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Não foi possível editar o professor.", "Erro", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+            
+        }
+    }//GEN-LAST:event_btnEditarActionPerformed
 
     /**
      * @param args the command line arguments
