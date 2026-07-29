@@ -72,6 +72,11 @@ public class ConsultaProfessores extends javax.swing.JFrame {
                     email,
                     telefone
             });
+            } else {
+                JOptionPane.showMessageDialog(this, "Professor não encontrato.");
+                limpar();
+                carregarTabela();
+                return;
             }
             
             tabelaProfessores.setModel(modelo);
