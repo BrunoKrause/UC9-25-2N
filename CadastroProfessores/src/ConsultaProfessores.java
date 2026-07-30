@@ -85,9 +85,10 @@ public class ConsultaProfessores extends javax.swing.JFrame {
             stmt.close();
             conexao.close();
             resultado.close();
-        } catch (SQLException erro) {
+        } catch (NumberFormatException | SQLException erro) {
             System.out.println("Deu algum erro, sei lá");
-            System.out.println(erro.getMessage());
+            System.out.println();
+            limpar();
         }
     }
     
@@ -380,8 +381,8 @@ public class ConsultaProfessores extends javax.swing.JFrame {
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         
-        if (campoId.getText().trim().isEmpty()){
-            JOptionPane.showMessageDialog(this, "Preencha o campo do ID");
+        if (campoId.getText().trim().isEmpty() || campoNome.getText().trim().isEmpty() || campoDisciplina.getText().trim().isEmpty() || campoEmail.getText().trim().isEmpty() || campoTelefone.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this, "Preencha todos os campos.");
             
         } else {
             int resposta = JOptionPane.showConfirmDialog(this, "Você realmente deseja editar este(a) professor(a)?", "Confirmação de Edição", JOptionPane.YES_NO_OPTION);

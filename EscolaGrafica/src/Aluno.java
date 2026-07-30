@@ -1,0 +1,201 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
+
+public class Aluno {
+    
+    private int id;
+    private String nome;
+    private String turma;
+    private String email;
+    
+    public Aluno(){
+        
+    }
+    
+    public Aluno(int id, String nome, String turma, String email){
+        this.id = id;
+        this.nome = nome;
+        this.turma = turma;
+        this.email = email;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getTurma() {
+        return turma;
+    }
+
+    public void setTurma(String turma) {
+        this.turma = turma;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
+    public boolean Editar(int id, String nome, String turma, String email){
+        String sql = """
+                     UPDATE aluno
+                     SET nome = ?, turma = ?, email = ?,
+                     WHERE id = ?
+                     """;
+        
+        try {
+            Connection conexao = Conexao.conectar();
+            
+            if (conexao == null) {
+                    System.out.println("Não foi possível conectar");
+                    return false;
+            }
+            
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            
+            stmt.setInt(4, id);
+            stmt.setString(1, nome);
+            stmt.setString(2, turma);
+            stmt.setString(3, email);
+            
+            int linhas = stmt.executeUpdate();
+            
+            stmt.close();
+            conexao.close();
+            return linhas > 0;
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, "Algum erro ocorreu." + erro.getMessage());
+            return false;
+        }
+    }
+    
+    public Aluno localizar(int id) {
+        String sql = "SELECT * FROM aluno WHERE id = ?";
+        
+        try {
+            Connection conexao = Conexao.conectar();
+            
+            if (conexao == null) {
+                    System.out.println("Não foi possível conectar");
+                    return null;
+            }
+            
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, id);
+            
+            ResultSet resultado = stmt.executeQuery();
+            
+            if (resultado.next()) {
+                Aluno aluno = new Aluno();
+                aluno.setId(resultado.getInt("id"));
+                aluno.setNome(resultado.getString("nome"));
+                aluno.setTurma(resultado.getString("turma"));
+                aluno.setEmail(resultado.getString("email"));
+                
+                stmt.close();
+                conexao.close();
+                resultado.close();
+                
+                return aluno;
+            } else {
+                JOptionPane.showMessageDialog(null,"Não foi possível localizar o aluno.", "Não localizado", JOptionPane.ERROR_MESSAGE);
+                stmt.close();
+                conexao.close();
+                resultado.close();
+                return null;
+            }
+        } catch (NumberFormatException | SQLException erro){
+            JOptionPane.showMessageDialog(null, "Algum erro ocorreu, digita um número válido");
+            return null;
+        }
+    }
+    
+    public boolean cadastrar(String nome, String turma, String email){
+            String sql = """
+                         INSERT INTO aluno
+                         (nome, turma, email)
+                         VALUES (?,?,?)
+                         """;
+            
+            try {
+                Connection conexao = Conexao.conectar();
+                if (conexao == null) {
+                    System.out.println("Não foi possível conectar");
+                    return false;
+                }
+                
+                PreparedStatement stmt = conexao.prepareStatement(sql);
+                stmt.setString(1, nome);
+                stmt.setString(2, turma);
+                stmt.setString(3, email);
+                
+                int linhas = stmt.executeUpdate();              
+                
+                stmt.close();
+                conexao.close();
+                return linhas > 0;
+                
+            } catch (SQLException erro) {
+                System.out.println("Deu erro " + erro.getMessage());
+                return false;
+            }
+        }
+    
+    public ArrayList<Aluno> listar(){
+        
+        ArrayList<Aluno> lista = new ArrayList<>();
+        
+        String sql = "SELECT * FROM aluno ORDER BY id";
+        
+        try {
+            Connection conexao = Conexao.conectar();
+            
+            if (conexao == null) {
+                System.out.println("Não foi possível conectar");
+                return lista;
+            }
+            
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            ResultSet resultado = stmt.executeQuery();
+            
+            while (resultado.next()) {
+                Aluno aluno = new Aluno();
+                aluno.setId(resultado.getInt("id"));
+                aluno.setNome(resultado.getString("nome"));
+                aluno.setTurma(resultado.getString("turma"));
+                aluno.setEmail(resultado.getString("email"));
+                
+                lista.add(aluno);
+            }
+            
+            resultado.close();
+            stmt.close();
+            conexao.close();
+        } catch (SQLException erro) {
+            System.out.println("Erro ao lista alunos");
+            return lista;
+        }
+        
+        return lista;  
+    }
+}
