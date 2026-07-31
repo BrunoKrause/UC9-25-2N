@@ -81,7 +81,8 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
-        btnConsulta.setText("Consulta");
+        btnConsulta.setBackground(new java.awt.Color(242, 242, 242));
+        btnConsulta.setText("🔎Consulta");
         btnConsulta.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnConsultaActionPerformed(evt);
@@ -108,7 +109,7 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(btnConsulta)
                         .addGap(18, 18, 18)
                         .addComponent(btnSair)))
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(10, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

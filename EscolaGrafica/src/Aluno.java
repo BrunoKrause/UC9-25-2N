@@ -56,10 +56,37 @@ public class Aluno {
         this.email = email;
     }
     
-    public boolean Editar(int id, String nome, String turma, String email){
+    public boolean excluir(int id){
+        String sql = "DELETE FROM aluno WHERE id = ?";
+        
+        try {
+            Connection conexao = Conexao.conectar();
+            
+            if (conexao == null) {
+                    System.out.println("Não foi possível conectar");
+                    return false;
+            }
+            
+            PreparedStatement stmt = conexao.prepareStatement(sql);
+            stmt.setInt(1, id);
+            
+            int linhas = stmt.executeUpdate();
+            
+            stmt.close();
+            conexao.close();
+            
+            return linhas > 0;
+            
+        } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, "Algum erro ocorreu." + erro.getMessage());
+            return false;
+        }
+    }
+    
+    public boolean editar(int id, String nome, String turma, String email){
         String sql = """
                      UPDATE aluno
-                     SET nome = ?, turma = ?, email = ?,
+                     SET nome = ?, turma = ?, email = ?
                      WHERE id = ?
                      """;
         

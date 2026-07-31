@@ -61,6 +61,9 @@ public class ConsultaAluno extends javax.swing.JFrame {
     public ConsultaAluno() {
         initComponents();
         carregarTabela();
+        desativarCampos();
+        setResizable(false);
+        setTitle("Consulta de Alunos");
     }
 
     @SuppressWarnings("unchecked")
@@ -155,6 +158,11 @@ public class ConsultaAluno extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tabelaAlunos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabelaAlunosMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tabelaAlunos);
 
         btnAtualizar.setText("🔄️Atualizar");
@@ -220,7 +228,32 @@ public class ConsultaAluno extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        if (campoId.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(this,"Digite o ID do Aluno");
+            return;
+        }
         
+        int resposta = JOptionPane.showConfirmDialog(this, "Você realmente deseja excluir este aluno?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        
+        if (resposta == JOptionPane.YES_OPTION) {
+            int id = Integer.parseInt(campoId.getText().trim());
+            
+            Aluno aluno = new Aluno();
+            boolean excluido = aluno.excluir(id);
+            
+            if (excluido){
+                JOptionPane.showMessageDialog(this, "Aluno excluído com sucesso!", "Exclusão de aluno", JOptionPane.INFORMATION_MESSAGE);
+                limpar();
+                carregarTabela();
+                return;
+            } else {
+                JOptionPane.showMessageDialog(this, "Não foi possível excluir nenhum aluno.", "Exclusão de aluno", JOptionPane.INFORMATION_MESSAGE);
+                limpar();
+                return;
+            }
+        }
+        limpar();
+        return;
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnLocalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocalizarActionPerformed
@@ -281,7 +314,7 @@ public class ConsultaAluno extends javax.swing.JFrame {
             String turma = campoTurma.getText().trim();
             String email = campoEmail.getText().trim();
             
-            boolean editado = aluno.Editar(id, nome, turma, email);
+            boolean editado = aluno.editar(id, nome, turma, email);
             
             if(editado) {
                     JOptionPane.showMessageDialog(this, "Aluno Editado com sucesso", "Informação", JOptionPane.INFORMATION_MESSAGE);
@@ -292,6 +325,19 @@ public class ConsultaAluno extends javax.swing.JFrame {
                 }
         }
     }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void tabelaAlunosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaAlunosMouseClicked
+        int linha = tabelaAlunos.getSelectedRow();
+        
+        if (linha >= 0) {
+            campoId.setText(tabelaAlunos.getValueAt(linha, 0).toString());
+            campoNome.setText(tabelaAlunos.getValueAt(linha,1).toString());
+            campoTurma.setText(tabelaAlunos.getValueAt(linha,2).toString());
+            campoEmail.setText(tabelaAlunos.getValueAt(linha,3).toString());
+            
+            ativarCampos();
+        }
+    }//GEN-LAST:event_tabelaAlunosMouseClicked
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
