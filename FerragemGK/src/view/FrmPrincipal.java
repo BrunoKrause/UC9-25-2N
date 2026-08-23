@@ -245,7 +245,7 @@ public class FrmPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_mnuClientesActionPerformed
 
     private void mnuFornecedoresActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuFornecedoresActionPerformed
-        //abrirTela(new FrmFornecedor());
+        abrirTela(new FrmFornecedor());
     }//GEN-LAST:event_mnuFornecedoresActionPerformed
 
     private void mnuProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuProdutosActionPerformed

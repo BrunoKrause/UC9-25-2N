@@ -90,7 +90,7 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         txtCidade.setText("");
         txtCep.setText("");
 
-        cmbUf.setSelectedIndex(0);
+        cmbUf.setSelectedIndex(-1);
 
         chkAtivo.setSelected(true);
 
