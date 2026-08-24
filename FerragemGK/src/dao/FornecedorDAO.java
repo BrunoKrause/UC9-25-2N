@@ -61,7 +61,7 @@ public class FornecedorDAO {
         
         String sql = """
                      UPDATE fornecedor
-                     SET razao_social = ?, nome_fantasia = ?, cnpj = ?, telefone = ?, email = ?, endereco = ?, numero = ?, complemento = ?, bairro = ?, cidade = 0, uf = ?, cep = ?, ativo = ?
+                     SET razao_social = ?, nome_fantasia = ?, cnpj = ?, telefone = ?, email = ?, endereco = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, ativo = ?
                      WHERE id_fornecedor = ?
                      """;
         
@@ -94,7 +94,7 @@ public class FornecedorDAO {
         
         String sql = """
                      DELETE FROM fornecedor
-                     WHERE id_fornededor = ?
+                     WHERE id_fornecedor = ?
                      """;
         
         try {
